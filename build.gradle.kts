@@ -1,20 +1,21 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.7.1"
-	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("maven-publish")
-	kotlin("jvm") version "1.6.21"
-	kotlin("plugin.spring") version "1.6.21"
-	kotlin("plugin.jpa") version "1.6.21"
+	kotlin("jvm") version "1.5.0"
+
 }
-
-group = "kh.org.nbc"
-version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
-
 repositories {
 	mavenCentral()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+tasks.withType<KotlinCompile> {
+	kotlinOptions {
+		freeCompilerArgs = listOf("-Xjsr305=strict")
+		jvmTarget = "11"
+	}
 }
 
 apply {
@@ -43,36 +44,29 @@ publishing {
 }
 
 dependencies {
-	// Spring
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.security:spring-security-core:${property("spring-security-version")}")
-	implementation("org.springframework:spring-context:${property("spring-version")}")
-	implementation("org.springframework:spring-web:5.3.20")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-	// Other
+	// spring
+	implementation("org.springframework:spring-context:${property("spring-version")}")
+	implementation("org.springframework:spring-webmvc:${property("spring-version")}")
+	implementation("org.springframework.boot:spring-boot-actuator:${property("spring-boot-version")}")
+	implementation("org.springframework.boot:spring-boot-starter-validation:${property("spring-boot-version")}")
+	implementation("org.springframework.boot:spring-boot-configuration-processor:${property("spring-boot-version")}")
+	implementation("org.springframework.data:spring-data-jpa:${property("spring-data-version")}")
+	implementation("org.springframework.security:spring-security-core:${property("spring-security-version")}")
+	// jackson-module
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin") {
+		version {
+			strictly("${property("jackson-module-version")}")
+		}
+	}
 	api("org.json:json:${property("json-version")}")
-	implementation("org.apache.commons:commons-lang3:${property("commons-lang3-version")}")
-
-	// Open fiegn
+	// openfeign
 	implementation("io.github.openfeign:feign-core:${property("openfeign-version")}")
 	implementation("io.github.openfeign:feign-slf4j:${property("openfeign-version")}")
 	implementation("org.springframework.cloud:spring-cloud-openfeign-core:${property("spring-cloud-openfeign-version")}")
-
-	// Test
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-
-tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "17"
-	}
-}
-
-tasks.withType<Test> {
-	useJUnitPlatform()
+	// other
+	implementation("javax.servlet:javax.servlet-api:${property("servlet-api-version")}")
+	implementation("org.apache.commons:commons-lang3:${property("commons-lang3-version")}")
+	implementation("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:${property("hibernate-jpa-2.1-api-version")}")
 }
