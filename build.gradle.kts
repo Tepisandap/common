@@ -36,8 +36,8 @@ publishing {
 			name = "GitHubPackages"
 			url = uri("https://maven.pkg.github.com/Tepisandap/common")
 			credentials {
-				username = System.getenv("GIT_PUBLISH_USER")
-				password = System.getenv("GIT_PUBLISH_PASSWORD")
+				username = System.getenv("COMMON_USR")
+				password = System.getenv("COMMON_PSW")
 			}
 		}
 	}
