@@ -17,5 +17,5 @@ jobs:
       - name: Build jar
         run: ./gradlew clean build publish
         env:
-          GIT_PUBLISH_USER: ${{ secrets.GIT_PUBLISH_USER  }}
-          GIT_PUBLISH_PASSWORD: ${{ secrets.GIT_PUBLISH_PASSWORD }}
+          GIT_PUBLISH_USER: ${{ secrets.COMMON_USR }}
+          GIT_PUBLISH_PASSWORD: ${{ secrets.COMMON_PSW }}
