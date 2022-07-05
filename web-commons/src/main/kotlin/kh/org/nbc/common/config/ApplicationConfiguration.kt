@@ -18,6 +18,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.hubspot.jackson.datatype.protobuf.ProtobufModule
+import kh.org.nbc.common.common.Constants.BASE_PACKAGE
 import kh.org.nbc.common.common.Constants.OWNER_PACKAGE
 import kh.org.nbc.common.exception.RestExceptionAdvice
 import org.slf4j.LoggerFactory
@@ -32,10 +33,10 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Configuration
-@EnableJpaRepositories("$OWNER_PACKAGE.*", repositoryBaseClass = JpaSpecificationExecutorWithProjectionImpl::class)
-@ConfigurationPropertiesScan(OWNER_PACKAGE)
+@EnableJpaRepositories("$BASE_PACKAGE.*", repositoryBaseClass = JpaSpecificationExecutorWithProjectionImpl::class)
+@ConfigurationPropertiesScan(BASE_PACKAGE)
 @Import(LogConfiguration::class, RestExceptionAdvice::class)
-@ComponentScan(basePackages = [OWNER_PACKAGE, "kh.org.nbc"])
+@ComponentScan(basePackages = [BASE_PACKAGE, "owner.owner"])
 open class ApplicationConfiguration(
     properties: DateTimeFormatProperties
 ) {
