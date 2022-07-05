@@ -16,6 +16,8 @@ object Constants {
     const val DEFAULT_PHONE_REGION = "KH"
     /** kh.org.nbc */
     const val BASE_PACKAGE = "kh.org.nbc"
+    /** owner.owner **/
+    const val OWNER_PACKAGE = "owner.owner"
 
     val objectMapper: ObjectMapper = AppContext.getContext().getBean(ObjectMapper::class.java)
 }

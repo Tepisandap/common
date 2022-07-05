@@ -60,6 +60,11 @@ dependencies {
             strictly("${property("jackson-module-version")}")
         }
     }
+    implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:${property("jackson-module-version")}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${property("jackson-module-version")}")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${property("jackson-module-version")}")
+    api("com.hubspot.jackson:jackson-datatype-protobuf:${property("hubspot-jackson-protobuf-version")}")
+    api("th.co.geniustree.springdata.jpa:specification-with-projections:2.0.2")
     api("org.json:json:${property("json-version")}")
     // openfeign
     implementation("io.github.openfeign:feign-core:${property("openfeign-version")}")
