@@ -69,22 +69,17 @@ open class LogConfiguration {
 			val requestURI = if (queryString.isNotEmpty()) {
 				requestWrapper.requestURI.plus("?").plus(queryString)
 			} else requestWrapper.requestURI
-			val preRequest = buildProperties?.name?.let {
-				buildProperties?.version?.let { it1 ->
-					LogObject(
+			val preRequest = LogObject(
 						requestId = shortId,
-						appName = it,
-						appVersion = it1,
+						appName = buildProperties!!.name,
+						appVersion = buildProperties!!.version,
 						action = "pre",
 						step = "request",
 						requestMethod = requestWrapper.method,
 						requestURI = requestURI,
 						clientHost = requestWrapper.remoteHost,
 						user = user.asString()
-					)
-				}
-			}
-
+			)
 			log.info(preRequest.asString())
 
 			val start: Instant = Instant.now()
@@ -96,12 +91,10 @@ open class LogConfiguration {
 
 			val requestArray = requestWrapper.contentAsByteArray
 			val requestStr = String(requestArray, Charsets.UTF_8).hideKey("password")
-			val postRequest = buildProperties?.name?.let {
-				buildProperties?.version?.let { it1 ->
-					LogObject(
+			val postRequest = LogObject(
 						requestId = shortId,
-						appName = it,
-						appVersion = it1,
+						appName = buildProperties!!.name,
+						appVersion = buildProperties!!.version,
 						action = "post",
 						step = "request",
 						requestMethod = requestWrapper.method,
@@ -109,20 +102,16 @@ open class LogConfiguration {
 						clientHost = requestWrapper.remoteHost,
 						user = user.asString(),
 						request = requestStr
-					)
-				}
-			}
+			)
 			log.info(postRequest.asString())
 
 			val responseArray = responseWrapper.contentAsByteArray
 			val responseStr = String(responseArray, Charsets.UTF_8)
 			val exception = (request.getAttribute("errorDetail") ?: "") as String
-			val response = buildProperties?.name?.let {
-				buildProperties?.version?.let { it1 ->
-					LogObject(
+			val response = LogObject(
 						requestId = shortId,
-						appName = it,
-						appVersion = it1,
+						appName = buildProperties!!.name,
+						appVersion = buildProperties!!.version,
 						action = "",
 						step = "response",
 						requestMethod = requestWrapper.method,
@@ -133,9 +122,7 @@ open class LogConfiguration {
 						exception = exception,
 						response = responseStr,
 						time = "$timeElapsed ms"
-					)
-				}
-			}
+			)
 			log.info(response.asString())
 
 			responseWrapper.copyBodyToResponse()
