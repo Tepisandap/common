@@ -1,4 +1,4 @@
-@file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+@file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "IMPLICIT_CAST_TO_ANY")
 
 package kh.org.nbc.common.config
 
@@ -27,7 +27,6 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.stream.Collectors
-import javax.annotation.Nullable
 import javax.annotation.PostConstruct
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -47,7 +46,6 @@ open class LogConfiguration {
 		private val log: Logger = LoggerFactory.getLogger(LogConfiguration::class.java)
 
 		@Autowired(required = false)
-		@Nullable
 		lateinit var buildProperties: BuildProperties
 
 		override fun shouldNotFilter(request: HttpServletRequest): Boolean {
@@ -71,17 +69,22 @@ open class LogConfiguration {
 			val requestURI = if (queryString.isNotEmpty()) {
 				requestWrapper.requestURI.plus("?").plus(queryString)
 			} else requestWrapper.requestURI
-			val preRequest = LogObject(
-						requestId = shortId,
-						appName = buildProperties.name,
-						appVersion = buildProperties.version,
-						action = "pre",
-						step = "request",
-						requestMethod = requestWrapper.method,
-						requestURI = requestURI,
-						clientHost = requestWrapper.remoteHost,
-						user = user.asString()
-			)
+
+			val preRequest = if (this::buildProperties.isInitialized) {
+				println("Your value is not assigned");
+			} else {
+				LogObject(
+					requestId = shortId,
+					appName = buildProperties.name,
+					appVersion = buildProperties.version,
+					action = "pre",
+					step = "request",
+					requestMethod = requestWrapper.method,
+					requestURI = requestURI,
+					clientHost = requestWrapper.remoteHost,
+					user = user.asString()
+				)
+			}
 			log.info(preRequest.asString())
 
 			val start: Instant = Instant.now()
@@ -93,38 +96,46 @@ open class LogConfiguration {
 
 			val requestArray = requestWrapper.contentAsByteArray
 			val requestStr = String(requestArray, Charsets.UTF_8).hideKey("password")
-			val postRequest = LogObject(
-						requestId = shortId,
-						appName = buildProperties.name,
-						appVersion = buildProperties.version,
-						action = "post",
-						step = "request",
-						requestMethod = requestWrapper.method,
-						requestURI = requestURI,
-						clientHost = requestWrapper.remoteHost,
-						user = user.asString(),
-						request = requestStr
-			)
+			val postRequest = if (this::buildProperties.isInitialized) {
+				println("value has not been assign yet.")
+			} else {
+				LogObject(
+					requestId = shortId,
+					appName = buildProperties.name,
+					appVersion = buildProperties.version,
+					action = "post",
+					step = "request",
+					requestMethod = requestWrapper.method,
+					requestURI = requestURI,
+					clientHost = requestWrapper.remoteHost,
+					user = user.asString(),
+					request = requestStr
+				)
+			}
 			log.info(postRequest.asString())
 
 			val responseArray = responseWrapper.contentAsByteArray
 			val responseStr = String(responseArray, Charsets.UTF_8)
 			val exception = (request.getAttribute("errorDetail") ?: "") as String
-			val response = LogObject(
-						requestId = shortId,
-						appName = buildProperties.name,
-						appVersion = buildProperties.version,
-						action = "",
-						step = "response",
-						requestMethod = requestWrapper.method,
-						requestURI = requestURI,
-						clientHost = requestWrapper.remoteHost,
-						httpStatus = httpServletResponse.status,
-						user = user.asString(),
-						exception = exception,
-						response = responseStr,
-						time = "$timeElapsed ms"
-			)
+			val response = if (this::buildProperties.isInitialized) {
+				println("value has not been assign yet")
+			} else {
+				LogObject(
+					requestId = shortId,
+					appName = buildProperties.name,
+					appVersion = buildProperties.version,
+					action = "",
+					step = "response",
+					requestMethod = requestWrapper.method,
+					requestURI = requestURI,
+					clientHost = requestWrapper.remoteHost,
+					httpStatus = httpServletResponse.status,
+					user = user.asString(),
+					exception = exception,
+					response = responseStr,
+					time = "$timeElapsed ms"
+				)
+			}
 			log.info(response.asString())
 
 			responseWrapper.copyBodyToResponse()
