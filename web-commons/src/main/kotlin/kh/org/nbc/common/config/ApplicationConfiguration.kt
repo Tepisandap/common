@@ -35,7 +35,7 @@ import java.time.format.DateTimeFormatter
 @Configuration
 @EnableJpaRepositories("$OWNER_PACKAGE.*", repositoryBaseClass = JpaSpecificationExecutorWithProjectionImpl::class)
 @ConfigurationPropertiesScan(OWNER_PACKAGE)
-@Import(RestExceptionAdvice::class)
+@Import(LogConfiguration::class, RestExceptionAdvice::class)
 @ComponentScan(basePackages = [OWNER_PACKAGE, BASE_PACKAGE])
 open class ApplicationConfiguration(
     properties: DateTimeFormatProperties
