@@ -69,17 +69,21 @@ open class LogConfiguration {
 			val requestURI = if (queryString.isNotEmpty()) {
 				requestWrapper.requestURI.plus("?").plus(queryString)
 			} else requestWrapper.requestURI
-			val preRequest = LogObject(
-				requestId = shortId,
-				appName = buildProperties?.name ?: "appName must not be null" ,
-				appVersion = buildProperties?.version ?: "appVersion must not be null",
-				action = "pre",
-				step = "request",
-				requestMethod = requestWrapper.method,
-				requestURI = requestURI,
-				clientHost = requestWrapper.remoteHost,
-				user = user.asString()
-			)
+			val preRequest = buildProperties?.name?.let {
+				buildProperties?.version?.let { it1 ->
+					LogObject(
+						requestId = shortId,
+						appName = it,
+						appVersion = it1,
+						action = "pre",
+						step = "request",
+						requestMethod = requestWrapper.method,
+						requestURI = requestURI,
+						clientHost = requestWrapper.remoteHost,
+						user = user.asString()
+					)
+				}
+			}
 
 			log.info(preRequest.asString())
 
@@ -92,38 +96,46 @@ open class LogConfiguration {
 
 			val requestArray = requestWrapper.contentAsByteArray
 			val requestStr = String(requestArray, Charsets.UTF_8).hideKey("password")
-			val postRequest = LogObject(
-				requestId = shortId,
-				appName = buildProperties?.name ?: "appName must not be null",
-				appVersion = buildProperties?.version ?: "appVersion must not be null",
-				action = "post",
-				step = "request",
-				requestMethod = requestWrapper.method,
-				requestURI = requestURI,
-				clientHost = requestWrapper.remoteHost,
-				user = user.asString(),
-				request = requestStr
-			)
+			val postRequest = buildProperties?.name?.let {
+				buildProperties?.version?.let { it1 ->
+					LogObject(
+						requestId = shortId,
+						appName = it,
+						appVersion = it1,
+						action = "post",
+						step = "request",
+						requestMethod = requestWrapper.method,
+						requestURI = requestURI,
+						clientHost = requestWrapper.remoteHost,
+						user = user.asString(),
+						request = requestStr
+					)
+				}
+			}
 			log.info(postRequest.asString())
 
 			val responseArray = responseWrapper.contentAsByteArray
 			val responseStr = String(responseArray, Charsets.UTF_8)
 			val exception = (request.getAttribute("errorDetail") ?: "") as String
-			val response = LogObject(
-				requestId = shortId,
-				appName = buildProperties?.name ?: "appName must not be null",
-				appVersion = buildProperties?.version ?: "appVersion must not be null",
-				action = "",
-				step = "response",
-				requestMethod = requestWrapper.method,
-				requestURI = requestURI,
-				clientHost = requestWrapper.remoteHost,
-				httpStatus = httpServletResponse.status,
-				user = user.asString(),
-				exception = exception,
-				response = responseStr,
-				time = "$timeElapsed ms"
-			)
+			val response = buildProperties?.name?.let {
+				buildProperties?.version?.let { it1 ->
+					LogObject(
+						requestId = shortId,
+						appName = it,
+						appVersion = it1,
+						action = "",
+						step = "response",
+						requestMethod = requestWrapper.method,
+						requestURI = requestURI,
+						clientHost = requestWrapper.remoteHost,
+						httpStatus = httpServletResponse.status,
+						user = user.asString(),
+						exception = exception,
+						response = responseStr,
+						time = "$timeElapsed ms"
+					)
+				}
+			}
 			log.info(response.asString())
 
 			responseWrapper.copyBodyToResponse()
