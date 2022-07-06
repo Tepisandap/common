@@ -33,10 +33,10 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Configuration
-@EnableJpaRepositories("$BASE_PACKAGE.*", repositoryBaseClass = JpaSpecificationExecutorWithProjectionImpl::class)
-@ConfigurationPropertiesScan(BASE_PACKAGE)
+@EnableJpaRepositories("$OWNER_PACKAGE.*", repositoryBaseClass = JpaSpecificationExecutorWithProjectionImpl::class)
+@ConfigurationPropertiesScan(OWNER_PACKAGE)
 @Import(LogConfiguration::class, RestExceptionAdvice::class)
-@ComponentScan(basePackages = [BASE_PACKAGE, "owner.owner"])
+@ComponentScan(basePackages = [OWNER_PACKAGE, BASE_PACKAGE])
 open class ApplicationConfiguration(
     properties: DateTimeFormatProperties
 ) {

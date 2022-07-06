@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+kh.org.nbc.common.config.ApplicationConfiguration,\
+kh.org.nbc.common.util.AppContext
