@@ -27,6 +27,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.stream.Collectors
+import javax.annotation.Nullable
 import javax.annotation.PostConstruct
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -46,7 +47,8 @@ open class LogConfiguration {
 		private val log: Logger = LoggerFactory.getLogger(LogConfiguration::class.java)
 
 		@Autowired(required = false)
-        var buildProperties: BuildProperties? = null
+		@Nullable
+		lateinit var buildProperties: BuildProperties
 
 		override fun shouldNotFilter(request: HttpServletRequest): Boolean {
 			return request.servletPath.contains("/actuator", "/swagger-ui", "/api-docs", "/favicon.ico", "upload/temporary", "upload/terms-and-conditions")
@@ -71,8 +73,8 @@ open class LogConfiguration {
 			} else requestWrapper.requestURI
 			val preRequest = LogObject(
 						requestId = shortId,
-						appName = buildProperties!!.name,
-						appVersion = buildProperties!!.version,
+						appName = buildProperties.name,
+						appVersion = buildProperties.version,
 						action = "pre",
 						step = "request",
 						requestMethod = requestWrapper.method,
@@ -93,8 +95,8 @@ open class LogConfiguration {
 			val requestStr = String(requestArray, Charsets.UTF_8).hideKey("password")
 			val postRequest = LogObject(
 						requestId = shortId,
-						appName = buildProperties!!.name,
-						appVersion = buildProperties!!.version,
+						appName = buildProperties.name,
+						appVersion = buildProperties.version,
 						action = "post",
 						step = "request",
 						requestMethod = requestWrapper.method,
@@ -110,8 +112,8 @@ open class LogConfiguration {
 			val exception = (request.getAttribute("errorDetail") ?: "") as String
 			val response = LogObject(
 						requestId = shortId,
-						appName = buildProperties!!.name,
-						appVersion = buildProperties!!.version,
+						appName = buildProperties.name,
+						appVersion = buildProperties.version,
 						action = "",
 						step = "response",
 						requestMethod = requestWrapper.method,
