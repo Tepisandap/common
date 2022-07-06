@@ -47,6 +47,20 @@ open class LogConfiguration {
 
 		@Autowired(required = false) lateinit var buildProperties: BuildProperties
 
+		fun checkLateInit(){
+			// checking whether the value is assigned or not
+			if(this::buildProperties.isInitialized)
+				println("Your value is not assigned");
+
+			else{
+				// initializing name
+				buildProperties.name
+				buildProperties.version
+				println(this.buildProperties)
+				// this will return true
+			}
+		}
+
 		override fun shouldNotFilter(request: HttpServletRequest): Boolean {
 			return request.servletPath.contains("/actuator", "/swagger-ui", "/api-docs", "/favicon.ico", "upload/temporary", "upload/terms-and-conditions")
 		}
@@ -68,6 +82,8 @@ open class LogConfiguration {
 			val requestURI = if (queryString.isNotEmpty()) {
 				requestWrapper.requestURI.plus("?").plus(queryString)
 			} else requestWrapper.requestURI
+
+			checkLateInit()
 
 			val preRequest = LogObject(
 				requestId = shortId,
@@ -92,6 +108,9 @@ open class LogConfiguration {
 
 			val requestArray = requestWrapper.contentAsByteArray
 			val requestStr = String(requestArray, Charsets.UTF_8).hideKey("password")
+
+			checkLateInit()
+
 			val postRequest = LogObject(
 				requestId = shortId,
 				appName = buildProperties.name,
@@ -109,6 +128,9 @@ open class LogConfiguration {
 			val responseArray = responseWrapper.contentAsByteArray
 			val responseStr = String(responseArray, Charsets.UTF_8)
 			val exception = (request.getAttribute("errorDetail") ?: "") as String
+
+			checkLateInit()
+
 			val response = LogObject(
 				requestId = shortId,
 				appName = buildProperties.name,
